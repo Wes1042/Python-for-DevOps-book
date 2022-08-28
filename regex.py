@@ -1,4 +1,6 @@
+from distutils.filelist import findall
 import re
+from unicodedata import name
 
 cc_list = '''
 Ezra Koenig <ekoenig@vpwk.com>,
@@ -54,5 +56,68 @@ print("-------------------------------------------")
 #setting names to groups
 matched = re.search(r'(?P<name>\w+)\@(?P<SLD>\w+)\.(?P<TLD>\w+)',cc_list)
 print(matched.group('name'))
+print('----------------------------------------------------------------------------')
+#This prints out the sentence appended with group ^^
 print(f'''name: {matched.group("name")}
-secondary Level Domain: {m})
+secondary Level Domain: {matched.group("SLD")}
+Top Level Domain: {matched.group("TLD")}''')
+
+#------------------------------------------
+# the 'findall' finds our regex in the whole input instead of one
+print("---------------------------------------------")
+matched = re.findall(r'\w+\@\w+\.\w+', cc_list)
+print(matched)
+print('---------------------------------------------------')
+#matching and storring in in groups
+matched = re.findall(r'(\w+)\@(\w+)\.(\w+)', cc_list)
+print(matched)
+print('--------------------------------------------------------')
+# sets x as the first group and stores it in names, prints out all names
+names = [x[0] for x in matched]
+print(names)
+
+
+
+
+#--------------------------------------------------------------------
+
+# Understanding what iterators are
+# ITERATORS
+# 'finditer' is an object that process text until it finds a match and stops
+# passing it to the next function
+print('-------------------------------------')
+matched = re.finditer(r'\w+\@\w+\.\w+', cc_list) 
+print(matched) 
+print(next(matched))
+print(next(matched))
+print(next(matched))
+# this can be used in a for loop
+print ('------------------------------')
+matched = re.finditer("(?P<name>\w+)\@(?P<SLD>\w+)\.(?P<TLD>\w+)" , cc_list)
+# the grouping stores it in a dictionary
+for m in matched:
+    print(m.groupdict())
+
+print('----------------------------------------')
+
+# understanding substitution
+#substitution can be used to substitute matched words
+
+print(re.sub("\d", "#", "The passcode you entered was 09876"))
+# logically : for every digit , replace with # 
+
+users = re.sub("(?P<name>\w+)\@(?P<SLD>\w+)\.(?P<TLD>\w+)", "\g<TLD>.\g<SLD>.\g<name>", cc_list)
+# logically: for every email group , replace with what \g says in order
+print(users)
+
+print('----------------------------------------------------------------------------------------')
+# Understanding compiling
+# regex takes a lot of performance
+# by using regex as an object it can be used constantly
+
+# its setting a preset regex as an object so it can be used over again
+# can be used with loops in conditionals
+
+
+regex = re.compile(r'\w+\@\w+\.\w+')
+print(regex.search(cc_list))
