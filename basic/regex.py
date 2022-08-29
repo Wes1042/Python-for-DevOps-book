@@ -1,6 +1,6 @@
-from distutils.filelist import findall
+
 import re
-from unicodedata import name
+
 
 cc_list = '''
 Ezra Koenig <ekoenig@vpwk.com>,
